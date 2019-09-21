@@ -120,6 +120,11 @@
 
 - koa-jwt做认证与授权
 
+# 图片上传
+
+- koa-body替代koa-parser
+- koa-static静态目录
+
 # 状态码汇总
 
 - 401请求要求身份验证
