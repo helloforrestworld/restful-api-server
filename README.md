@@ -124,6 +124,9 @@
 
 - koa-body替代koa-parser
 - koa-static静态目录
+- 返回图片链接:
+  1. path.basename 获取资源名称
+  2. 通过ctx.origin + 静态资源目录 + 资源名称拼接图片链接
 
 # 状态码汇总
 
