@@ -114,6 +114,12 @@
   - 有效载荷(Payload)
   - 签名(Signature)
 
+- jsonwebtoken生成和验证token
+
+# 认证与授权
+
+- koa-jwt做认证与授权
+
 # 状态码汇总
 
 - 401请求要求身份验证

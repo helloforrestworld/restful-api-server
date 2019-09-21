@@ -10,7 +10,7 @@ const { connectionStr } = require('./config')
 
 mongoose.connect(connectionStr, { useNewUrlParser: true,  useUnifiedTopology: true  }, () => console.log('数据库连接成功...'))
 mongoose.connection.on('error', (err) => {
-  console.error(`Mongoose connection error: ${err}`);
+  console.error(`Mongoose connection error: ${err}`)
   process.exit(1);
 });
 mongoose.set('useFindAndModify', false)
