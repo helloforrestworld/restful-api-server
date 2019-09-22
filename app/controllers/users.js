@@ -76,9 +76,16 @@ class UserCtl {
     ctx.body = { token }
   }
 
-  async checkOwner(ctx, next) {
+  async checkIsYourself(ctx, next) {
     if (ctx.params.id !== ctx.state.user._id) {
       ctx.throw(403, '没有权限')
+    }
+    await next()
+  }
+
+  async checkIsOtherUser(ctx, next) {
+    if (ctx.params.id === ctx.state.user._id) {
+      ctx.throw(409, '用户信息冲突')
     }
     await next()
   }
