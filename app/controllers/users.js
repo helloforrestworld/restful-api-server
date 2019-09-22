@@ -38,7 +38,7 @@ class UserCtl {
     ctx.verifyParams({
       name: { type: 'string', required: false },
       password: { type: 'string', required: false },
-      avatarUrl: { type: 'string', required: false },
+      avatar_url: { type: 'string', required: false },
       gender: { type: 'string', required: false },
       headline: { type: 'string', required: false },
       locations: { type: 'array', itemType: 'string', required: false },
@@ -67,10 +67,12 @@ class UserCtl {
       name: { type: 'string', required: true },
       password: { type: 'string', required: true }
     })
+
     const user = await User.findOne(ctx.request.body)
     if (!user) {
       ctx.throw(401, '用户名或密码错误')
     }
+
     const { _id, name } = user
     const token = jsonwebtoken.sign({ _id, name }, secret, { expiresIn: '1d' })
     ctx.body = { token }
@@ -92,6 +94,7 @@ class UserCtl {
 
   async listFollowing(ctx) {
     const users = await User.findById(ctx.params.id).select('+following').populate('following')
+
     if (!users) {
       ctx.throw(404, '用户不存在')
     }
