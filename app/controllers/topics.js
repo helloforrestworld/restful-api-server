@@ -1,4 +1,5 @@
 const Topic = require('../models/topics')
+const User = require('../models/users')
 
 
 class TopicCtl {
@@ -46,6 +47,19 @@ class TopicCtl {
     } catch (err) {
       throw(404, '话题不存在')
     }
+  }
+
+  async checkExistTopic(ctx, next) {
+    const user = await Topic.findById(ctx.params.id)
+    if (!user) {
+      ctx.throw(404, '话题不存在')
+    }
+    await next()
+  }
+
+  async listTopicFollower(ctx) {
+    const users = await User.find({ followingTopics: ctx.params.id })
+    ctx.body = users
   }
 }
 

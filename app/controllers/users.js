@@ -15,9 +15,23 @@ class UserCtl {
   async findById(ctx) {
     const { fields = '' } = ctx.query
     const blackList = ['password']
-    const selected = fields.split(';').filter(field => Boolean(field.trim()) && blackList.indexOf(field) === -1).map(field => `+${field}`).join(' ')
 
-    const user = await User.findById(ctx.params.id).select(selected)
+    const fieldsArr = fields.split(';').filter(field => Boolean(field.trim()) && blackList.indexOf(field) === -1)
+
+    const selected = fieldsArr.map(field => `+${field}`).join(' ')
+
+    const populated = fieldsArr.map(field => {
+      if (field === 'employments') {
+        return 'employments.company employments.job'
+      }
+      if (field === 'educations') {
+        return 'educations.school educations.major'
+      }
+      return field
+    }).join(' ')
+
+    const user = await User.findById(ctx.params.id).select(selected).populate(populated)
+
     if (!user) {
       ctx.throw(404, '用户不存在')
     }
@@ -106,11 +120,6 @@ class UserCtl {
     ctx.body = users.following
   }
 
-  async listFollower(ctx) {
-    const users = await User.find({ following: ctx.params.id })
-    ctx.body = users
-  }
-
   async checkUserExist(ctx, next) {
     const user = await User.findById(ctx.params.id)
     if (!user) {
@@ -133,6 +142,39 @@ class UserCtl {
     const index = me.following.map(id => id.toString()).indexOf(ctx.params.id)
     if (index > -1) {
       me.following.splice(index, 1)
+      me.save()
+    }
+    ctx.status = 204
+  }
+
+  async listFollower(ctx) {
+    const users = await User.find({ following: ctx.params.id })
+    ctx.body = users
+  }
+
+  async listFollowingTopic(ctx) {
+    const users = await User.findById(ctx.params.id).select('+followingTopics').populate('followingTopics')
+
+    if (!users) {
+      ctx.throw(404, '用户不存在')
+    }
+    ctx.body = users.followingTopics
+  }
+
+  async followTopic(ctx) {
+    const me = await User.findById(ctx.state.user._id).select('+followingTopics')
+    if (!me.followingTopics.map(id => id.toString()).includes(ctx.params.id)) {
+      me.followingTopics.push(ctx.params.id)
+      me.save()
+    }
+    ctx.status = 204
+  }
+
+  async unFollowTopic(ctx) {
+    const me = await User.findById(ctx.state.user._id).select('+followingTopics')
+    const index = me.followingTopics.map(id => id.toString()).indexOf(ctx.params.id)
+    if (index > -1) {
+      me.followingTopics.splice(index, 1)
       me.save()
     }
     ctx.status = 204
