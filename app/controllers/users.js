@@ -5,7 +5,10 @@ const { secret } = require('../config')
 
 class UserCtl {
   async find(ctx) {
-    ctx.body = await User.find()
+    let { page = 1, pageSize = 10 } = ctx.query
+    page = Math.max(page * 1, 1)
+    pageSize = Math.max(pageSize * 1, 1)
+    ctx.body = await User.find().limit(pageSize).skip((page - 1) * pageSize)
   }
   async findById(ctx) {
     const { fields = '' } = ctx.query
