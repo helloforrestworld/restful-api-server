@@ -185,6 +185,35 @@ class UserCtl {
 
     ctx.body = questions
   }
+
+  async followQuestion(ctx) {
+    const me = await User.findById(ctx.state.user._id).select('+followingQuestions')
+    if (!me.followingQuestions.map(id => id.toString()).includes(ctx.params.id)) {
+      me.followingQuestions.push(ctx.params.id)
+      me.save()
+    }
+    ctx.status = 204
+  }
+
+  async unFollowQuestion(ctx) {
+    const me = await User.findById(ctx.state.user._id).select('+followingQuestions')
+    const index = me.followingQuestions.map(id => id.toString()).indexOf(ctx.params.id)
+    if (index > -1) {
+      me.followingQuestions.splice(index, 1)
+      me.save()
+    }
+    ctx.status = 204
+  }
+
+  async listFollowingQuestion(ctx) {
+    const users = await User.findById(ctx.params.id).select('+followingQuestions').populate('followingQuestions')
+
+    if (!users) {
+      ctx.throw(404, '用户不存在')
+    }
+
+    ctx.body = users.followingQuestions
+  }
 }
 
 module.exports = new UserCtl()

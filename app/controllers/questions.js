@@ -69,6 +69,11 @@ class QuestionCtl {
     await ctx.state.question.delete()
     ctx.status = 204
   }
+
+  async listQuestionFollower(ctx) {
+    const users = await User.find({ followingQuestions: ctx.params.id })
+    ctx.body = users
+  }
 }
 
 module.exports = new QuestionCtl()
