@@ -13,7 +13,7 @@ class QuestionCtl {
   async findById(ctx) {
     const { fields = '' } = ctx.query
     const selected = fields.split(';').filter(filed => Boolean(filed.trim())).map(filed => `+${filed}`).join(' ')
-    const question = await Question.findById(ctx.params.id).select(selected).populate('questioner')
+    const question = await Question.findById(ctx.params.id).select(selected).populate('questioner topics')
 
     if (!question) {
       ctx.throw(404, '问题不存在')
@@ -37,7 +37,8 @@ class QuestionCtl {
   async create(ctx) {
     ctx.verifyParams({
       title: { type: 'string', required: true },
-      description: { type: 'string', required: false }
+      description: { type: 'string', required: false },
+      topics: { type: 'array', itemType: 'string',  required: false }
     })
 
     const question = await new Question({ ...ctx.request.body, questioner: ctx.state.user._id }).save()
@@ -57,7 +58,8 @@ class QuestionCtl {
   async update(ctx) {
     ctx.verifyParams({
       title: { type: 'string', required: true },
-      description: { type: 'string', required: false }
+      description: { type: 'string', required: false },
+      topics: { type: 'array', itemType: 'string',  required: false }
     })
     await ctx.state.question.update(ctx.request.body)
     ctx.body = ctx.state.question
