@@ -16,7 +16,7 @@ class QuestionCtl {
     const question = await Question.findById(ctx.params.id).select(selected).populate('questioner')
 
     if (!question) {
-      throw (404, '问题不存在')
+      ctx.throw(404, '问题不存在')
     }
 
     ctx.body = question
