@@ -50,8 +50,8 @@ class TopicCtl {
   }
 
   async checkExistTopic(ctx, next) {
-    const user = await Topic.findById(ctx.params.id)
-    if (!user) {
+    const topic = await Topic.findById(ctx.params.id)
+    if (!topic) {
       ctx.throw(404, '话题不存在')
     }
     await next()

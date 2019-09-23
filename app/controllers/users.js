@@ -1,5 +1,6 @@
 const jsonwebtoken = require('jsonwebtoken')
 const User = require('../models/users')
+const Question = require('../models/questions')
 const { secret } = require('../config')
 
 
@@ -74,10 +75,7 @@ class UserCtl {
     ctx.body = user
   }
   async del(ctx) {
-    const user = await User.findByIdAndRemove(ctx.params.id)
-    if (!user) {
-      ctx.throw(404, '用户不存在')
-    }
+    await User.findByIdAndRemove(ctx.params.id)
     ctx.status = 204
   }
 
@@ -178,6 +176,14 @@ class UserCtl {
       me.save()
     }
     ctx.status = 204
+  }
+
+  async listQuestion(ctx) {
+    const questions = await Question.find({
+      questioner: ctx.params.id
+    })
+
+    ctx.body = questions
   }
 }
 
