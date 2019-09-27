@@ -4,6 +4,7 @@ const router = new Router({ prefix: '/users' })
 const { find, findById, create, update, del, login, checkIsYourself, listFollowing, listFollower, checkUserExist, checkIsOtherUser, follow, unFollow, listFollowingTopic, followTopic, unFollowTopic, listQuestion, followQuestion, unFollowQuestion, listFollowingQuestion, listAnswer, followAnswer, unFollowAnswer, listFollowingAnswer } = require('../controllers/users')
 const { checkExistTopic } = require('../controllers/topics')
 const { checkQuestionExist } = require('../controllers/questions')
+const { checkAnswerExist } = require('../controllers/answers')
 const { secret } = require('../config')
 const auth = jwt({ secret })
 
