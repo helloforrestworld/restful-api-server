@@ -54,6 +54,12 @@ const userSchema = new Schema({
       ref: 'Question'
     }],
     select: false
+  },
+  followingAnswers: {
+    type: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Answer'
+    }]
   }
 })
 

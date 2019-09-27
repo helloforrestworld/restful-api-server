@@ -1,6 +1,7 @@
 const jsonwebtoken = require('jsonwebtoken')
 const User = require('../models/users')
 const Question = require('../models/questions')
+const Answer = require('../models/answers')
 const { secret } = require('../config')
 
 
@@ -213,6 +214,43 @@ class UserCtl {
     }
 
     ctx.body = users.followingQuestions
+  }
+
+  async listAnswer(ctx) {
+    const answers = await Answer.find({
+      answerer: ctx.params.id
+    })
+
+    ctx.body = answers
+  }
+
+  async followAnswer(ctx) {
+    const me = await User.findById(ctx.state.user._id).select('+followingAnswers')
+    if (!me.followingAnswers.map(id => id.toString()).includes(ctx.params.id)) {
+      me.followingAnswers.push(ctx.params.id)
+      me.save()
+    }
+    ctx.status = 204
+  }
+
+  async unFollowAnswer(ctx) {
+    const me = await User.findById(ctx.state.user._id).select('+followingAnswers')
+    const index = me.followingAnswers.map(id => id.toString()).indexOf(ctx.params.id)
+    if (index > -1) {
+      me.followingAnswers.splice(index, 1)
+      me.save()
+    }
+    ctx.status = 204
+  }
+
+  async listFollowingAnswer(ctx) {
+    const users = await User.findById(ctx.params.id).select('+followingAnswers').populate('followingAnswers')
+
+    if (!users) {
+      ctx.throw(404, '用户不存在')
+    }
+
+    ctx.body = users.followingAnswers
   }
 }
 
