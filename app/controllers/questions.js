@@ -38,7 +38,7 @@ class QuestionCtl {
     ctx.verifyParams({
       title: { type: 'string', required: true },
       description: { type: 'string', required: false },
-      topics: { type: 'array', itemType: 'string',  required: false }
+      topics: { type: 'array', itemType: 'string', required: false }
     })
 
     const question = await new Question({ ...ctx.request.body, questioner: ctx.state.user._id }).save()
@@ -59,7 +59,7 @@ class QuestionCtl {
     ctx.verifyParams({
       title: { type: 'string', required: true },
       description: { type: 'string', required: false },
-      topics: { type: 'array', itemType: 'string',  required: false }
+      topics: { type: 'array', itemType: 'string', required: false }
     })
     await ctx.state.question.update(ctx.request.body)
     ctx.body = ctx.state.question

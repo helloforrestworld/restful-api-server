@@ -252,6 +252,40 @@ class UserCtl {
 
     ctx.body = users.followingAnswers
   }
+
+  // 赞过答案的列表
+  async listLikingAnswer(ctx) {
+    const users = await User.findById(ctx.params.id).select('+likingAnswers').populate('likingAnswers')
+
+    if (!users) {
+      ctx.throw(404, '用户不存在')
+    }
+
+    ctx.body = users.likingAnswers
+  }
+
+  // 赞答案
+  async likeAnswer(ctx) {
+    const me = await User.findById(ctx.state.user._id).select('+likingAnswers')
+    if (!me.likingAnswers.map(id => id.toString()).includes(ctx.params.id)) {
+      me.likingAnswers.push(ctx.params.id)
+      me.save()
+      await Answer.findByIdAndUpdate(ctx.params.id, { $inc: { voteCount: 1 } })
+    }
+    ctx.status = 204
+  }
+
+  // 取消赞答案
+  async unLikeAnswer(ctx) {
+    const me = await User.findById(ctx.state.user._id).select('+likingAnswers')
+    const index = me.likingAnswers.map(id => id.toString()).indexOf(ctx.params.id)
+    if (index > -1) {
+      me.likingAnswers.splice(index, 1)
+      me.save()
+      await Answer.findByIdAndUpdate(ctx.params.id, { $inc: { voteCount: -1 } })
+    }
+    ctx.status = 204
+  }
 }
 
 module.exports = new UserCtl()
