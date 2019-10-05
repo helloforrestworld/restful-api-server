@@ -1,7 +1,7 @@
 const Router = require('koa-router')
 const jwt = require('koa-jwt')
 const router = new Router({ prefix: '/users' })
-const { find, findById, create, update, del, login, checkIsYourself, listFollowing, listFollower, checkUserExist, checkIsOtherUser, follow, unFollow, listFollowingTopic, followTopic, unFollowTopic, listQuestion, followQuestion, unFollowQuestion, listFollowingQuestion, listAnswer, followAnswer, unFollowAnswer, listFollowingAnswer } = require('../controllers/users')
+const { find, findById, create, update, del, login, checkIsYourself, listFollowing, listFollower, checkUserExist, checkIsOtherUser, follow, unFollow, listFollowingTopic, followTopic, unFollowTopic, listQuestion, followQuestion, unFollowQuestion, listFollowingQuestion, listAnswer, followAnswer, unFollowAnswer, listFollowingAnswer, listLikingAnswer, likeAnswer, cancelLikeAnswer, listDisLikingAnswer, disLikeAnswer, cancelDisLikeAnswer } = require('../controllers/users')
 const { checkExistTopic } = require('../controllers/topics')
 const { checkQuestionExist } = require('../controllers/questions')
 const { checkAnswerExist } = require('../controllers/answers')
@@ -49,5 +49,17 @@ router.put('/followingAnswer/:id', auth, checkAnswerExist, followAnswer)
 router.delete('/followingAnswer/:id', auth, checkAnswerExist, unFollowAnswer)
 
 router.get('/:id/followingAnswers', listFollowingAnswer)
+
+router.put('/likeAnswer/:id', auth, checkAnswerExist, likeAnswer, cancelDisLikeAnswer)
+
+router.delete('/cancelLikeAnswer/:id', auth, checkAnswerExist, cancelLikeAnswer)
+
+router.get('/:id/likingAnswers', listLikingAnswer)
+
+router.put('/disLikeAnswer/:id', auth, checkAnswerExist, disLikeAnswer, cancelLikeAnswer)
+
+router.delete('/cancelDisLikeAnswer/:id', auth, checkAnswerExist, cancelDisLikeAnswer)
+
+router.get('/:id/disLikingAnswers', listDisLikingAnswer)
 
 module.exports = router

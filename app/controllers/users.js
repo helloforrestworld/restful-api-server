@@ -294,7 +294,7 @@ class UserCtl {
   }
 
   // 点赞答案
-  async likeAnswer(ctx) {
+  async likeAnswer(ctx, next) {
     const me = await User.findById(ctx.state.user._id).select('+likingAnswers')
     if (!me.likingAnswers.map(id => id.toString()).includes(ctx.params.id)) {
       me.likingAnswers.push(ctx.params.id)
@@ -302,6 +302,7 @@ class UserCtl {
       await Answer.findByIdAndUpdate(ctx.params.id, { $inc: { voteCount: 1 } })
     }
     ctx.status = 204
+    await next()
   }
 
   // 取消点赞答案
@@ -329,13 +330,14 @@ class UserCtl {
   }
 
   // 踩答案
-  async disLikeAnswer(ctx) {
+  async disLikeAnswer(ctx, next) {
     const me = await User.findById(ctx.state.user._id).select('+dislikingAnswers')
     if (!me.dislikingAnswers.map(id => id.toString()).includes(ctx.params.id)) {
       me.dislikingAnswers.push(ctx.params.id)
       me.save()
     }
     ctx.status = 204
+    await next()
   }
 
   // 取消踩答案
