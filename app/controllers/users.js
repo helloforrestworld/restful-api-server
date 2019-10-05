@@ -250,7 +250,7 @@ class UserCtl {
     ctx.body = answers
   }
 
-  // 关注回答
+  // 收藏回答
   async followAnswer(ctx) {
     const me = await User.findById(ctx.state.user._id).select('+followingAnswers')
     if (!me.followingAnswers.map(id => id.toString()).includes(ctx.params.id)) {
@@ -260,7 +260,7 @@ class UserCtl {
     ctx.status = 204
   }
 
-  // 取消回答关注
+  // 取消回答收藏
   async unFollowAnswer(ctx) {
     const me = await User.findById(ctx.state.user._id).select('+followingAnswers')
     const index = me.followingAnswers.map(id => id.toString()).indexOf(ctx.params.id)
@@ -271,7 +271,7 @@ class UserCtl {
     ctx.status = 204
   }
 
-  // 用户关注的回答列表
+  // 用户收藏的回答列表
   async listFollowingAnswer(ctx) {
     const users = await User.findById(ctx.params.id).select('+followingAnswers').populate('followingAnswers')
 
